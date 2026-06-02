@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-light-bg text-slate-800 antialiased;
+  }
+}
+
+/* Clases de utilidad adaptadas para estética de Fitness/Deporte en fondo claro */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.text-gradient-neon {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600;
+}
+
+.neon-border-hover:hover {
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow: 0 0 15px rgba(22, 163, 74, 0.1);
+}
+
+.neon-button-glow {
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2);
+}
+
+.neon-button-glow:hover {
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+}
+
+/* === Anatomical Body Map Hotspots === */
+@keyframes hotspot-ring {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+.hotspot-dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2.5px solid #14b8a6;
+  color: #14b8a6;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.35);
+  transition: all 0.2s ease;
+}
+
+.hotspot-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 184, 166, 0.5);
+  animation: hotspot-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.hotspot-dot:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  background: #14b8a6;
+  color: white;
+  border-color: #14b8a6;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.5);
+}
+
+.hotspot-dot.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.hotspot-dot.active::before {
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+/* Hide the + text inside for screen readers, show visually */
+.hotspot-plus {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  margin-top: -1px;
+}
+
+/* Tooltip for hotspots */
+.hotspot-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  top: calc(100% + 8px);
+  background: #1e293b;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.hotspot-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: #1e293b;
+}
+
+.hotspot-dot:hover .hotspot-tooltip {
+  transform: translateX(-50%) scale(1);
+}
+
+/* Lesion card animations */
+.lesion-card {
+  transition: all 0.2s ease;
+}
+
+.lesion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom scrollbar for panels */
+.anatomy-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.anatomy-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.anatomy-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.anatomy-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

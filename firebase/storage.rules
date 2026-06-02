@@ -1,0 +1,60 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper para obtener el rol del usuario desde Firestore
+    function getUserRole() {
+      return firestore.get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.rol;
+    }
+    
+    // Helper para comprobar el rol
+    function isUserRole(role) {
+      return isAuthenticated() && getUserRole() == role;
+    }
+
+    // Carpeta de videos/imágenes de ejercicios clínicos
+    match /ejercicios/{allPaths=**} {
+      // Cualquier usuario autenticado puede visualizar los videos/recursos de rehabilitación
+      allow read: if isAuthenticated();
+      
+      // Solo fisioterapeutas y administradores pueden subir o actualizar multimedia de ejercicios
+      allow write: if isAuthenticated() && (
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+    }
+
+    // Carpeta de archivos personales de los usuarios (ej. foto de perfil, documentos de diagnóstico)
+    match /usuarios/{userId}/{allPaths=**} {
+      // El propio usuario, fisioterapeutas y admins pueden leer estos archivos
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId || 
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+      
+      // Solo el propio usuario o un administrador puede escribir archivos en esta carpeta
+      allow write: if isAuthenticated() && (
+        request.auth.uid == userId || 
+        isUserRole('admin')
+      );
+    }
+    
+    // Carpeta de imágenes/multimedia para los artículos de revista científica
+    match /articulos/{allPaths=**} {
+      // Acceso público de lectura para que los artículos puedan verse sin autenticación
+      allow read: if true;
+      
+      // Solo fisioterapeutas y administradores pueden subir contenido multimedia a los artículos
+      allow write: if isAuthenticated() && (
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+    }
+  }
+}

@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper para obtener los datos del usuario actual desde la colección de usuarios
+    function getUserData() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+    
+    // Helper para verificar el rol del usuario autenticado
+    function isUserRole(role) {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) && 
+        getUserData().rol == role;
+    }
+
+    // Reglas para la colección 'usuarios'
+    match /usuarios/{userId} {
+      // Un usuario autenticado puede leer su propio perfil.
+      // Los fisioterapeutas y administradores pueden leer los perfiles de todos los usuarios.
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId || 
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+      
+      // Permitir la creación de la cuenta a cualquier usuario autenticado (se crea su propio documento)
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Solo el usuario dueño de la cuenta o el administrador pueden actualizar los datos del usuario.
+      // (Nota: Si es actualización del campo 'rol', se podría restringir solo a admins en producción)
+      allow update: if isAuthenticated() && (
+        request.auth.uid == userId || 
+        isUserRole('admin')
+      );
+      
+      // Solo el administrador puede eliminar usuarios
+      allow delete: if isAuthenticated() && isUserRole('admin');
+    }
+    
+    // Reglas para la colección 'ejercicios'
+    match /ejercicios/{ejercicioId} {
+      // Todos los usuarios autenticados pueden ver el catálogo de ejercicios
+      allow read: if isAuthenticated();
+      
+      // Solo los fisioterapeutas y administradores pueden crear, modificar o eliminar ejercicios
+      allow write: if isAuthenticated() && (
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+    }
+    
+    // Reglas para la colección 'progreso_pacientes'
+    match /progreso_pacientes/{progresoId} {
+      // Un paciente puede ver su propio progreso.
+      // Los fisioterapeutas y administradores pueden ver el progreso de cualquier paciente.
+      allow read: if isAuthenticated() && (
+        resource.data.usuario_id == /databases/$(database)/documents/usuarios/$(request.auth.uid) || 
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+      
+      // Un paciente puede crear registros de su propio progreso.
+      // Fisioterapeutas y administradores también pueden crear progresos para pacientes.
+      allow create: if isAuthenticated() && (
+        request.resource.data.usuario_id == /databases/$(database)/documents/usuarios/$(request.auth.uid) || 
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+      
+      // Modificar el registro de progreso (por el paciente o su fisioterapeuta/admin)
+      allow update: if isAuthenticated() && (
+        resource.data.usuario_id == /databases/$(database)/documents/usuarios/$(request.auth.uid) || 
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+      
+      // Eliminar registros de progreso (restringido a fisioterapeutas y administradores)
+      allow delete: if isAuthenticated() && (
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+    }
+    
+    // Reglas para la colección 'articulos_revista'
+    match /articulos_revista/{articuloId} {
+      // Lectura pública de los artículos de la revista científica/rehabilitación
+      allow read: if true;
+      
+      // Solo fisioterapeutas y administradores pueden escribir, actualizar o borrar artículos
+      allow write: if isAuthenticated() && (
+        isUserRole('fisioterapeuta') || 
+        isUserRole('admin')
+      );
+    }
+  }
+}
