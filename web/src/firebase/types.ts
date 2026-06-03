@@ -32,6 +32,10 @@ export interface Usuario {
   /** Notas de historial clínico redactadas por el fisioterapeuta */
   historial_clinico?: string;
 
+  // --- CAMPOS ADICIONALES DE REGISTRO ---
+  telefono?: string;
+  fecha_nacimiento?: string;
+
   // --- CONTROL LEGAL / ÉTICO ---
   acepto_politicas?: boolean;
   fecha_aceptacion?: Timestamp;

@@ -44,6 +44,12 @@ data class Usuario(
     @field:PropertyName("historial_clinico")
     val historialClinico: String = "",
 
+    @get:PropertyName("fecha_nacimiento")
+    @field:PropertyName("fecha_nacimiento")
+    val fechaNacimiento: String = "",
+
+    val telefono: String = "",
+
     // --- CONTROL LEGAL / ÉTICO ---
     @get:PropertyName("acepto_politicas")
     @field:PropertyName("acepto_politicas")

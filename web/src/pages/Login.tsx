@@ -8,7 +8,7 @@ import {
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 import { UserRole } from '../firebase/types';
-import { Activity, Mail, Lock, User, UserPlus, LogIn } from 'lucide-react';
+import { Activity, Mail, Lock, User, UserPlus, LogIn, Phone, Calendar } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
 
 const Login: React.FC = () => {
@@ -23,6 +23,9 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [sex, setSex] = useState<'masculino' | 'femenino' | 'otro'>('masculino');
 
   const navigate = useNavigate();
 
@@ -57,7 +60,10 @@ const Login: React.FC = () => {
           rol: role,
           fecha_registro: Timestamp.now(),
           acepto_politicas: true,
-          fecha_aceptacion: Timestamp.now()
+          fecha_aceptacion: Timestamp.now(),
+          telefono: phone,
+          fecha_nacimiento: birthdate,
+          sexo: sex
         });
 
         if (role === 'paciente') {
@@ -110,20 +116,67 @@ const Login: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Campo Nombre (Solo registro) */}
           {!isLogin && (
-            <div className="space-y-1.5 text-left">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Nombre Completo</label>
-              <div className="relative">
-                <User className="absolute left-4 top-3.5 h-4.5 w-4.5 text-slate-400" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Elena Mendoza"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:outline-none text-sm text-slate-700 font-semibold"
-                />
+            <>
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Nombre Completo</label>
+                <div className="relative">
+                  <User className="absolute left-4 top-3.5 h-4.5 w-4.5 text-slate-400" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="Elena Mendoza"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:outline-none text-sm text-slate-700 font-semibold"
+                  />
+                </div>
               </div>
-            </div>
+
+              {/* Teléfono Móvil */}
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Teléfono Móvil</label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-3.5 h-4.5 w-4.5 text-slate-400" />
+                  <input
+                    type="tel"
+                    required
+                    placeholder="0987654321"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:outline-none text-sm text-slate-700 font-semibold"
+                  />
+                </div>
+              </div>
+
+              {/* Fecha de Nacimiento */}
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Fecha de Nacimiento</label>
+                <div className="relative">
+                  <Calendar className="absolute left-4 top-3.5 h-4.5 w-4.5 text-slate-400" />
+                  <input
+                    type="date"
+                    required
+                    value={birthdate}
+                    onChange={(e) => setBirthdate(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:outline-none text-sm text-slate-700 font-semibold"
+                  />
+                </div>
+              </div>
+
+              {/* Sexo Biológico */}
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Sexo Biológico</label>
+                <select
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value as any)}
+                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-emerald-500 focus:outline-none text-sm text-slate-700 font-semibold"
+                >
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+            </>
           )}
 
           {/* Campo Correo */}
