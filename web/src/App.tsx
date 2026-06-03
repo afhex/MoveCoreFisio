@@ -11,11 +11,13 @@ import AdminSidebar from './layouts/AdminSidebar';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Revista from './pages/Revista';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Páginas Privadas - Fisioterapeuta / Admin
 import AdminDashboard from './pages/AdminDashboard';
 import AdminExercises from './pages/AdminExercises';
 import AdminRevista from './pages/AdminRevista';
+import AdminRoutineAssigner from './pages/AdminRoutineAssigner';
 
 // Páginas Privadas - Paciente
 import PatientDashboard from './pages/PatientDashboard';
@@ -30,6 +32,7 @@ const App: React.FC = () => {
             <Route index element={<LandingPage />} />
             <Route path="login" element={<Login />} />
             <Route path="revista" element={<Revista />} />
+            <Route path="politica-privacidad" element={<PrivacyPolicy />} />
             
             {/* Ruta del Catálogo simplificado (para la Landing) */}
             <Route path="ejercicios" element={
@@ -65,6 +68,7 @@ const App: React.FC = () => {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="ejercicios" element={<AdminExercises />} />
             <Route path="revista" element={<AdminRevista />} />
+            <Route path="rutinas" element={<AdminRoutineAssigner />} />
           </Route>
 
           {/* Redirección por defecto para cualquier ruta no válida */}

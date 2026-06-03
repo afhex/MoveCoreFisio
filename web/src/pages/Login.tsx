@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
@@ -22,12 +22,19 @@ const Login: React.FC = () => {
   const [role, setRole] = useState<UserRole>(defaultRole);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!isLogin && !acceptTerms) {
+      setError('Debes aceptar el consentimiento informado y políticas de privacidad para registrarte.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -48,7 +55,9 @@ const Login: React.FC = () => {
           nombre: name,
           correo: email,
           rol: role,
-          fecha_registro: Timestamp.now()
+          fecha_registro: Timestamp.now(),
+          acepto_politicas: true,
+          fecha_aceptacion: Timestamp.now()
         });
 
         if (role === 'paciente') {
@@ -161,6 +170,26 @@ const Login: React.FC = () => {
                 <option value="paciente">Paciente (Entrenamiento y Progreso)</option>
                 <option value="fisioterapeuta">Fisioterapeuta (Gestión y Asignación)</option>
               </select>
+            </div>
+          )}
+
+          {/* Consentimiento Informado (Solo registro) */}
+          {!isLogin && (
+            <div className="flex items-start gap-2 text-left mt-3">
+              <input
+                type="checkbox"
+                id="accept-policies"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-slate-350 text-emerald-600 focus:ring-emerald-500 accent-emerald-500 cursor-pointer"
+              />
+              <label htmlFor="accept-policies" className="text-[11px] text-slate-500 font-medium leading-snug cursor-pointer">
+                Acepto los términos del{' '}
+                <Link to="/politica-privacidad" target="_blank" className="text-emerald-600 hover:text-emerald-700 underline font-semibold">
+                  Consentimiento Informado y Política de Privacidad de Datos de Salud
+                </Link>{' '}
+                de MoveCare Fisio.
+              </label>
             </div>
           )}
 

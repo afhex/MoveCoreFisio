@@ -6,7 +6,7 @@ import { DocumentReference, Timestamp } from 'firebase/firestore';
 export type UserRole = 'paciente' | 'fisioterapeuta' | 'admin';
 
 /**
- * Representa un usuario registrado en el sistema.
+ * Representa un usuario registrado en el sistema, enriquecido con Ficha Clínica.
  * Colección: `/usuarios`
  */
 export interface Usuario {
@@ -17,6 +17,24 @@ export interface Usuario {
   rol: UserRole;
   /** Fecha en la que el usuario creó su cuenta */
   fecha_registro: Timestamp;
+
+  // --- CAMPOS DE FICHA CLÍNICA (Opcionales) ---
+  cedula?: string;
+  edad?: number;
+  /** Peso en kilogramos. Ej. 70.5 */
+  peso?: number;
+  /** Estatura en centímetros. Ej. 175 */
+  estatura?: number;
+  sexo?: 'masculino' | 'femenino' | 'otro';
+  discapacidad?: string;
+  /** Diagnóstico oficial del fisioterapeuta */
+  diagnostico?: string;
+  /** Notas de historial clínico redactadas por el fisioterapeuta */
+  historial_clinico?: string;
+
+  // --- CONTROL LEGAL / ÉTICO ---
+  acepto_politicas?: boolean;
+  fecha_aceptacion?: Timestamp;
 }
 
 /**

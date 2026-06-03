@@ -28,6 +28,11 @@ const AdminSidebar: React.FC = () => {
       icon: LayoutDashboard
     },
     {
+      path: '/fisioterapeuta/rutinas',
+      name: 'Expediente y Rutinas',
+      icon: UserCheck
+    },
+    {
       path: '/fisioterapeuta/ejercicios',
       name: 'Gestor de Ejercicios',
       icon: Dumbbell

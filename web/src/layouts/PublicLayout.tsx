@@ -76,9 +76,13 @@ const PublicLayout: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-bold tracking-widest text-emerald-600">MOVECARE FISIO</span>
             <span className="text-slate-300">|</span>
-            <span>Desarrollo de Software - Rehabilitación Física</span>
+            <span>Tesis de Grado - Rehabilitación y Deporte</span>
           </div>
-          <p>© {new Date().getFullYear()} AFHEX. Todos los derechos reservados.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/politica-privacidad" className="hover:text-emerald-600 font-bold transition-all">Consentimiento Informado</Link>
+            <span>•</span>
+            <p>© {new Date().getFullYear()} Todos los derechos reservados.</p>
+          </div>
         </div>
       </footer>
     </div>
